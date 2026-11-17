@@ -1,10 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import type { ImageAsset } from "@/lib/media";
 import { Cloud, Heart, Sparkle, Star } from "./Decor";
 import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "./Icons";
 import { Modal } from "./Modal";
+import { SectionHead } from "./SectionHead";
 
 const INITIAL = 6;
 const STEP = 6;
@@ -16,7 +19,6 @@ function EmptyGallery() {
       <div className="gallery-empty__frames" aria-hidden="true">
         <span className="gallery-empty__frame gallery-empty__frame--1" />
         <span className="gallery-empty__frame gallery-empty__frame--2" />
-        <span className="gallery-empty__frame gallery-empty__frame--3" />
         <svg className="gallery-empty__camera float" viewBox="0 0 120 96">
           <rect x="8" y="22" width="104" height="68" rx="18" fill="#2563EB" />
           <path d="M38 22l8-14h28l8 14z" fill="#1D4ED8" />
@@ -36,11 +38,96 @@ function EmptyGallery() {
   );
 }
 
-export function Gallery({ photos }: { photos: string[] }) {
+/** Десктоп/планшет: ряды одинаковой высоты, ширина — по пропорциям фото (без обрезки). */
+function JustifiedGrid({ photos, onOpen }: { photos: ImageAsset[]; onOpen: (i: number) => void }) {
+  const { t } = useI18n();
+  return (
+    <ul className="gallery-rows">
+      {photos.map((p, i) => {
+        const ratio = p.width / p.height;
+        return (
+          <li
+            key={p.src}
+            className={`gallery-tile gallery-tile--${i % 4}`}
+            style={{ "--ratio": ratio } as React.CSSProperties}
+          >
+            <button type="button" onClick={() => onOpen(i)} aria-label={t.gallery.open(i + 1)}>
+              <Image
+                src={p.src}
+                alt={t.gallery.photoAlt(i + 1)}
+                width={p.width}
+                height={p.height}
+                sizes="(min-width: 1200px) 400px, 40vw"
+                className="h-full w-full object-contain"
+              />
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** Телефон: горизонтальная лента со «щелчком» к фото и счётчиком. */
+function MobileCarousel({
+  photos,
+  onOpen,
+  more,
+}: {
+  photos: ImageAsset[];
+  onOpen: (i: number) => void;
+  more?: React.ReactNode;
+}) {
+  const { t } = useI18n();
+  const track = useRef<HTMLUListElement>(null);
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => e.isIntersecting && setCurrent(Number((e.target as HTMLElement).dataset.index))),
+      { root: el, threshold: 0.6 },
+    );
+    el.querySelectorAll("li").forEach((li) => io.observe(li));
+    return () => io.disconnect();
+  }, [photos.length]);
+
+  return (
+    <div>
+      <ul ref={track} className="gallery-carousel" aria-label={t.gallery.title}>
+        {photos.map((p, i) => (
+          <li key={p.src} data-index={i} style={{ "--ratio": p.width / p.height } as React.CSSProperties}>
+            <button type="button" onClick={() => onOpen(i)} aria-label={t.gallery.open(i + 1)}>
+              <Image
+                src={p.src}
+                alt={t.gallery.photoAlt(i + 1)}
+                width={p.width}
+                height={p.height}
+                sizes="86vw"
+                className="h-full w-full object-contain"
+              />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <p className="text-sm font-bold text-[var(--ink-muted)]" aria-live="polite">
+          {t.gallery.counter(current + 1, photos.length)}
+        </p>
+        {more}
+      </div>
+    </div>
+  );
+}
+
+export function Gallery({ photos }: { photos: ImageAsset[] }) {
   const { t } = useI18n();
   const [visible, setVisible] = useState(INITIAL);
   const [index, setIndex] = useState<number | null>(null);
   const total = photos.length;
+  const shown = photos.slice(0, visible);
 
   const close = useCallback(() => setIndex(null), []);
   const go = useCallback(
@@ -58,35 +145,39 @@ export function Gallery({ photos }: { photos: string[] }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [index, go]);
 
+  const current = index !== null ? photos[index] : null;
+
   return (
     <section id="gallery" className="section gallery section-anchor">
       <div className="gallery__deco" aria-hidden="true">
         <Cloud className="gallery__cloud drift" color="#FFF3B0" />
         <Star className="gallery__star spin-slow" color="#2563EB" />
       </div>
-      <div className="container">
-        <header className="section-head section-head--center" data-reveal>
-          <span className="eyebrow">{t.gallery.eyebrow}</span>
-          <h2 className="section-title">{t.gallery.title}</h2>
-          <p className="section-subtitle">{t.gallery.subtitle}</p>
-        </header>
+      <div className="wrap">
+        <SectionHead eyebrow={t.gallery.eyebrow} title={t.gallery.title} subtitle={t.gallery.subtitle} />
 
         {total === 0 ? (
           <EmptyGallery />
         ) : (
           <>
-            <ul className="gallery-grid">
-              {photos.slice(0, visible).map((src, i) => (
-                <li key={src} className={`gallery-item gallery-item--p${i % 6}`}>
-                  <button type="button" onClick={() => setIndex(i)} aria-label={t.gallery.open(i + 1)}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt={t.gallery.photoAlt(i + 1)} loading="lazy" decoding="async" />
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className="only-desktop-block" data-reveal>
+              <JustifiedGrid photos={shown} onOpen={setIndex} />
+            </div>
+            <div className="only-mobile-block" data-reveal>
+              <MobileCarousel
+                photos={shown}
+                onOpen={setIndex}
+                more={
+                  visible < total && (
+                    <button type="button" className="btn btn--ghost btn--sm" onClick={() => setVisible((v) => v + STEP)}>
+                      {t.gallery.showMore}
+                    </button>
+                  )
+                }
+              />
+            </div>
             {visible < total && (
-              <div className="gallery__more">
+              <div className="mt-6 hidden justify-center desk:flex">
                 <button type="button" className="btn btn--ghost" onClick={() => setVisible((v) => v + STEP)}>
                   {t.gallery.showMore}
                 </button>
@@ -96,15 +187,22 @@ export function Gallery({ photos }: { photos: string[] }) {
         )}
       </div>
 
-      <Modal open={index !== null} onClose={close} label={t.gallery.title} className="lightbox">
-        {index !== null && (
+      <Modal open={current !== null} onClose={close} label={t.gallery.title} className="lightbox">
+        {current && index !== null && (
           <div className="lightbox__body">
             <button type="button" className="modal__close lightbox__close" onClick={close} aria-label={t.gallery.close}>
               <CloseIcon />
             </button>
             <figure className="lightbox__figure">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img key={photos[index]} src={photos[index]} alt={t.gallery.photoAlt(index + 1)} />
+              <Image
+                key={current.src}
+                src={current.src}
+                alt={t.gallery.photoAlt(index + 1)}
+                width={current.width}
+                height={current.height}
+                sizes="100vw"
+                className="lightbox__img"
+              />
               <figcaption aria-live="polite">{t.gallery.counter(index + 1, total)}</figcaption>
             </figure>
             {total > 1 && (

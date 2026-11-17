@@ -2,7 +2,7 @@
 
 import { useI18n } from "@/lib/i18n";
 import { SITE, whatsappLink } from "@/lib/site";
-import { Cloud, Flower, Sparkle, Star } from "./Decor";
+import { Cloud, Sparkle, Star } from "./Decor";
 import { ClockIcon, InstagramIcon, PhoneIcon, PinIcon, RouteIcon, WhatsAppIcon } from "./Icons";
 
 export function Contacts() {
@@ -20,9 +20,8 @@ export function Contacts() {
     <section id="contacts" className="section contacts section-anchor">
       <div className="contacts__deco" aria-hidden="true">
         <Cloud className="contacts__cloud drift" color="#fff" />
-        <Flower className="contacts__flower" color="#FFF3B0" color2="#FFB870" />
       </div>
-      <div className="container contacts__grid">
+      <div className="wrap contacts__grid">
         <div className="contacts__main">
           <header className="section-head" data-reveal>
             <span className="eyebrow">{c.eyebrow}</span>

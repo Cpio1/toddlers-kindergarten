@@ -6,9 +6,10 @@ import type { GroupKey } from "@/lib/site";
 import type { GroupCopy } from "@/locales/types";
 import { Book, Cloud, Flower, Heart, LetterBlock, Pencil, Sparkle, Star, Cube, Squiggle } from "./Decor";
 import { CheckIcon, ChevronDownIcon, CloseIcon, ArrowRightIcon } from "./Icons";
+import { SectionHead } from "./SectionHead";
 import { Modal } from "./Modal";
 
-const PREVIEW = 4;
+const PREVIEW = 3;
 
 function CardArt({ k }: { k: GroupKey }) {
   if (k === "kinders")
@@ -133,12 +134,8 @@ export function Groups() {
         <Sparkle className="groups__sparkle twinkle" color="#FFD43B" />
         <Cloud className="groups__cloud drift" color="#fff" />
       </div>
-      <div className="container">
-        <header className="section-head section-head--center" data-reveal>
-          <span className="eyebrow">{t.groups.eyebrow}</span>
-          <h2 className="section-title">{t.groups.title}</h2>
-          <p className="section-subtitle">{t.groups.subtitle}</p>
-        </header>
+      <div className="wrap">
+        <SectionHead eyebrow={t.groups.eyebrow} title={t.groups.title} subtitle={t.groups.subtitle} />
 
         <div className="groups__grid">
           {t.groups.items.map((g, i) => (

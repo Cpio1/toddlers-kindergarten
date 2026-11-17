@@ -5,6 +5,7 @@ import { useI18n } from "@/lib/i18n";
 import type { ProgramCategoryKey } from "@/locales/types";
 import { Cloud, Dots, Ring, Sparkle, Star } from "./Decor";
 import { BallIcon, BrainIcon, ChatIcon, ChevronDownIcon, PaletteIcon, SparkIcon } from "./Icons";
+import { SectionHead } from "./SectionHead";
 
 const ORDER: ProgramCategoryKey[] = ["intellect", "language", "creative", "sport", "interactive"];
 
@@ -74,17 +75,16 @@ function DesktopPrograms() {
       <div className="prog-map" data-reveal>
         <svg className="prog-map__lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {[
-            "M50 52 Q 50 30 50 12",
-            "M50 52 Q 70 40 88 36",
-            "M50 52 Q 66 70 76 86",
-            "M50 52 Q 34 70 24 86",
-            "M50 52 Q 30 40 12 36",
+            "M50 52 Q 50 32 50 15",
+            "M50 52 Q 70 44 85 42",
+            "M50 52 Q 66 72 74 85",
+            "M50 52 Q 34 72 26 85",
+            "M50 52 Q 30 44 15 42",
           ].map((d, i) => (
             <path key={i} d={d} className={ORDER[i] === active ? "is-active" : ""} vectorEffect="non-scaling-stroke" />
           ))}
         </svg>
         <div className="prog-map__hub" aria-hidden="true">
-          <Star className="prog-map__hub-star spin-slow" />
           <strong>{t.programs.hub}</strong>
           <span>{t.programs.hubSub}</span>
         </div>
@@ -187,12 +187,8 @@ export function Programs() {
         <Ring className="programs__ring" color="#FFD43B" />
         <Star className="programs__star spin-slow" color="#FFDF57" />
       </div>
-      <div className="container">
-        <header className="section-head" data-reveal>
-          <span className="eyebrow">{t.programs.eyebrow}</span>
-          <h2 className="section-title">{t.programs.title}</h2>
-          <p className="section-subtitle">{t.programs.subtitle}</p>
-        </header>
+      <div className="wrap">
+        <SectionHead eyebrow={t.programs.eyebrow} title={t.programs.title} subtitle={t.programs.subtitle} />
         <div className="only-desktop-block">
           <DesktopPrograms />
         </div>

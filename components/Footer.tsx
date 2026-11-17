@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
-import { SECTION_IDS, SITE } from "@/lib/site";
-import { Cloud, Sparkle, Star, Wave } from "./Decor";
+import { NAV_IDS, SITE } from "@/lib/site";
+import type { ImageAsset } from "@/lib/media";
+import { Sparkle, Star, Wave } from "./Decor";
 import { ClockIcon, InstagramIcon, PhoneIcon, PinIcon } from "./Icons";
 import { Logo } from "./Logo";
 
-export function Footer() {
+export function Footer({ logo }: { logo: ImageAsset | null }) {
   const { t } = useI18n();
   const [year, setYear] = useState<number | null>(null);
   useEffect(() => setYear(new Date().getFullYear()), []);
@@ -18,12 +19,11 @@ export function Footer() {
       <div className="site-footer__deco" aria-hidden="true">
         <Star className="site-footer__star spin-slow" />
         <Sparkle className="site-footer__sparkle twinkle" color="#FFDF57" />
-        <Cloud className="site-footer__cloud drift" color="rgba(255,255,255,.08)" />
       </div>
-      <div className="container site-footer__grid">
+      <div className="wrap site-footer__grid">
         <div className="site-footer__brand">
           <a href="#home" aria-label={t.header.homeAria}>
-            <Logo light />
+            <Logo light asset={logo} />
           </a>
           <p>{t.footer.description}</p>
         </div>
@@ -31,7 +31,7 @@ export function Footer() {
         <nav aria-label={t.footer.navTitle} className="site-footer__nav">
           <h2 className="site-footer__title">{t.footer.navTitle}</h2>
           <ul>
-            {SECTION_IDS.map((id) => (
+            {NAV_IDS.map((id) => (
               <li key={id}>
                 <a href={`#${id}`}>{t.nav[id]}</a>
               </li>
@@ -67,7 +67,7 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="container site-footer__bottom">
+      <div className="wrap site-footer__bottom">
         <p>
           © {year ?? ""} {t.footer.rights}
         </p>

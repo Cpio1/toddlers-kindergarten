@@ -67,7 +67,7 @@ export function Nutrition() {
         <Heart className="nutrition__heart float" color="#FFD9E4" />
       </div>
 
-      <div className="container nutrition__grid">
+      <div className="wrap nutrition__grid">
         <div className="nutrition__text">
           <header className="section-head" data-reveal>
             <span className="eyebrow">{t.nutrition.eyebrow}</span>

@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
-import { SECTION_IDS, whatsappLink, type SectionId } from "@/lib/site";
+import { NAV_IDS, SECTION_IDS, whatsappLink, type SectionId } from "@/lib/site";
+import type { ImageAsset } from "@/lib/media";
 import { LOCALE_LABELS, type Locale } from "@/locales";
 import { CloseIcon, MenuIcon, WhatsAppIcon } from "./Icons";
 import { Logo } from "./Logo";
@@ -29,7 +30,7 @@ function LangSwitch({ className = "" }: { className?: string }) {
   );
 }
 
-export function Header() {
+export function Header({ logo }: { logo: ImageAsset | null }) {
   const { t } = useI18n();
   const ref = useRef<HTMLElement>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -89,7 +90,7 @@ export function Header() {
   }, [open]);
 
   const navLinks = (onClick?: () => void) =>
-    SECTION_IDS.map((id) => (
+    NAV_IDS.map((id) => (
       <li key={id}>
         <a
           href={`#${id}`}
@@ -104,9 +105,9 @@ export function Header() {
 
   return (
     <header ref={ref} className={`site-header ${scrolled ? "is-scrolled" : ""} ${open ? "is-open" : ""}`}>
-      <div className="site-header__bar container">
+      <div className="site-header__bar wrap">
         <a href="#home" className="site-header__logo" aria-label={t.header.homeAria} onClick={() => setOpen(false)}>
-          <Logo />
+          <Logo asset={logo} />
         </a>
 
         <nav className="site-nav" aria-label={t.header.mainNav}>
@@ -137,7 +138,7 @@ export function Header() {
       </div>
 
       <div id="mobile-menu" className="mobile-menu" inert={!open}>
-        <nav aria-label={t.header.mainNav} className="container">
+        <nav aria-label={t.header.mainNav} className="wrap">
           <ul className="mobile-menu__list">{navLinks(() => setOpen(false))}</ul>
           <a
             className="btn btn--primary btn--block"

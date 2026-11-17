@@ -1,6 +1,18 @@
-// Временный логотип: текстовая надпись + солнечная звёздочка.
-// Когда появится официальный логотип, замените содержимое этого компонента.
-export function Logo({ light = false }: { light?: boolean }) {
+import Image from "next/image";
+import type { ImageAsset } from "@/lib/media";
+
+/**
+ * Логотип. Если в /public есть logo.png / logo.webp / logo.svg — используется он
+ * (PNG с прозрачным фоном). Иначе — временная текстовая надпись со звёздочкой.
+ */
+export function Logo({ light = false, asset }: { light?: boolean; asset?: ImageAsset | null }) {
+  if (asset) {
+    return (
+      <span className={`logo logo--image ${light ? "logo--light-bg" : ""}`}>
+        <Image src={asset.src} alt="Toddlers" width={asset.width} height={asset.height} className="block h-9 w-auto max-w-[180px] object-contain" priority />
+      </span>
+    );
+  }
   return (
     <span className={`logo ${light ? "logo--light" : ""}`}>
       <svg className="logo__mark" viewBox="0 0 44 44" aria-hidden="true" focusable="false">

@@ -30,4 +30,7 @@ export const SECTION_IDS = [
 
 export type SectionId = (typeof SECTION_IDS)[number];
 
+/** Пункты меню: «Главная» не выводится — на главный экран ведёт логотип. */
+export const NAV_IDS = SECTION_IDS.filter((id) => id !== "home");
+
 export type GroupKey = "kinders" | "stars" | "preschoolers";

@@ -1,13 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
+import type { ImageAsset } from "@/lib/media";
 import { whatsappLink } from "@/lib/site";
 import { ArrowRightIcon, WhatsAppIcon } from "./Icons";
 import { Cloud, Dots, Flower, Heart, LetterBlock, Rainbow, Ring, Sparkle, Squiggle, Star, Sun, Wave } from "./Decor";
 
 interface HeroProps {
-  /** Путь к main-page.png — передаётся только если файл реально существует в /public. */
-  heroImage: string | null;
+  /** main-page.png — передаётся только если файл реально существует в /public. */
+  heroImage: ImageAsset | null;
 }
 
 const BADGE_ICONS = [
@@ -52,6 +54,16 @@ function Ctas({ block = false }: { block?: boolean }) {
   );
 }
 
+function AgeSticker() {
+  const { t } = useI18n();
+  return (
+    <div className="hero-art__sticker" aria-hidden="true">
+      <strong>2–6</strong>
+      <span>{t.hero.ageUnit}</span>
+    </div>
+  );
+}
+
 /** Иллюстрация без фотографии: радуга, солнце, кубики TOD, облака. */
 function HeroIllustration({ compact = false }: { compact?: boolean }) {
   return (
@@ -73,23 +85,28 @@ function HeroIllustration({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function HeroArt({ heroImage }: HeroProps) {
+/** Фото в рамке с его собственными пропорциями — без обрезки лиц. */
+function HeroPhoto({ img, sizes, className }: { img: ImageAsset; sizes: string; className: string }) {
   const { t } = useI18n();
   return (
-    <div className="hero-art">
+    <div className={className} style={{ "--ratio": img.width / img.height } as React.CSSProperties}>
+      <Image src={img.src} alt={t.hero.photoAlt} width={img.width} height={img.height} sizes={sizes} priority className="block h-full w-full object-contain" />
+    </div>
+  );
+}
+
+function HeroArt({ heroImage }: HeroProps) {
+  return (
+    <div className={`hero-art ${heroImage ? "hero-art--photo" : ""}`}>
       <div className="hero-art__halo" aria-hidden="true" />
-      <div className="hero-art__blob">
-        {heroImage ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={heroImage} alt={t.hero.photoAlt} className="hero-art__photo" fetchPriority="high" />
-        ) : (
+      {heroImage ? (
+        <HeroPhoto img={heroImage} sizes="(min-width: 900px) 45vw, 100vw" className="hero-art__frame" />
+      ) : (
+        <div className="hero-art__blob">
           <HeroIllustration />
-        )}
-      </div>
-      <div className="hero-art__sticker" aria-hidden="true">
-        <strong>2–6</strong>
-        <span>{t.hero.ageUnit}</span>
-      </div>
+        </div>
+      )}
+      <AgeSticker />
       <Star className="hero-art__star hero-art__star--1 spin-slow" />
       <Star className="hero-art__star hero-art__star--2 spin-slow spin-slow--rev" color="#2563EB" />
       <Sparkle className="hero-art__sparkle twinkle" color="#2563EB" />
@@ -104,7 +121,7 @@ function HeroArt({ heroImage }: HeroProps) {
 function DesktopHero({ heroImage }: HeroProps) {
   const { t } = useI18n();
   return (
-    <div className="hero-desktop container">
+    <div className="hero-desktop wrap">
       <div className="hero-desktop__text">
         <h1 className="hero-title" data-reveal>
           {t.hero.titleStart} <span className="hl-underline">{t.hero.titleAccent}</span>
@@ -127,24 +144,25 @@ function DesktopHero({ heroImage }: HeroProps) {
 function MobileHero({ heroImage }: HeroProps) {
   const { t } = useI18n();
   return (
-    <div className="hero-mobile container">
+    <div className="hero-mobile wrap">
       <h1 className="hero-title" data-reveal>
         {t.hero.titleStart} <span className="hl-underline">{t.hero.titleAccent}</span>
       </h1>
       <p className="hero-subtitle" data-reveal>
         {t.hero.subtitle}
       </p>
-      <div className="hero-mobile__card" data-reveal>
-        {heroImage ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={heroImage} alt={t.hero.photoAlt} className="hero-mobile__photo" />
-        ) : (
-          <HeroIllustration compact />
-        )}
-        <div className="hero-mobile__sticker" aria-hidden="true">
-          <strong>2–6</strong> {t.hero.ageUnit}
+      {heroImage ? (
+        <div className="relative mt-4 flex justify-center" data-reveal>
+          <HeroPhoto img={heroImage} sizes="100vw" className="hero-mobile__frame" />
         </div>
-      </div>
+      ) : (
+        <div className="hero-mobile__card" data-reveal>
+          <HeroIllustration compact />
+          <div className="hero-mobile__sticker" aria-hidden="true">
+            <strong>2–6</strong> {t.hero.ageUnit}
+          </div>
+        </div>
+      )}
       <Ctas block />
       <Badges variant="mobile" />
     </div>
@@ -155,8 +173,6 @@ export function Hero({ heroImage }: HeroProps) {
   return (
     <section id="home" className="hero section-anchor">
       <div className="hero__bg" aria-hidden="true">
-        <Cloud className="hero__bg-cloud hero__bg-cloud--1 drift" />
-        <Cloud className="hero__bg-cloud hero__bg-cloud--2 drift drift--rev" />
         <Squiggle className="hero__bg-squiggle" />
         <Sparkle className="hero__bg-sparkle twinkle" color="#FFD43B" />
       </div>
