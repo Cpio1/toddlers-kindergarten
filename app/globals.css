@@ -3933,4 +3933,131 @@ a:hover .logo__mark {
   min-height: 44px;
 }
 
+/* =========================================================
+   ФОТО В КАРТОЧКАХ ГРУПП И В ПРОГРАММАХ
+   Группы — интерьеры без людей: рамка во всю ширину карточки, cover с подобранной точкой.
+   Программы — фото с детьми: рамка повторяет пропорции снимка, без обрезки.
+   ========================================================= */
+.group-card--photo {
+  padding-top: 0;
+}
+.group-card__photo {
+  position: relative;
+  margin: 0 -24px 4px;
+  height: clamp(160px, 48vw, 230px);
+  overflow: hidden; /* рамка фото: обрезает только плавное приближение при наведении */
+  background: var(--blue-light);
+}
+.group-card__photo button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+.group-card__photo button:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: -6px;
+}
+.group-card__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale var(--dur-slow) var(--ease-out);
+}
+.group-card:hover .group-card__img {
+  scale: 1.04;
+}
+.group-card__photo::after {
+  /* мягкий переход фото в цвет карточки */
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 36%;
+  background: linear-gradient(to top, rgba(15, 35, 80, 0.32), transparent);
+  pointer-events: none;
+}
+.group-card__photo-badge {
+  position: absolute;
+  left: 20px;
+  bottom: 14px;
+  z-index: 1;
+  pointer-events: none;
+}
+.group-card__corner {
+  position: absolute;
+  right: 18px;
+  bottom: 20px;
+  width: 38px;
+  z-index: 0;
+}
+.group-card__corner--pencil {
+  width: 76px;
+  right: 14px;
+  rotate: -18deg;
+}
+@media (min-width: 640px) and (max-width: 899px) {
+  .group-card__photo {
+    height: clamp(170px, 26vw, 230px);
+  }
+}
+@media (min-width: 900px) {
+  .group-card__photo {
+    margin-inline: -22px;
+    height: clamp(104px, 17vh, 190px);
+  }
+}
+
+.prog-panel__head--photo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 16px;
+}
+.prog-photo {
+  --h: clamp(92px, 15vh, 168px);
+  display: block;
+  height: var(--h);
+  aspect-ratio: var(--ratio);
+  padding: 0;
+  border: 4px solid var(--white);
+  border-radius: 22px 22px 22px 52px;
+  overflow: hidden;
+  background: var(--blue-light);
+  box-shadow:
+    0 0 0 3px var(--c),
+    var(--shadow-sm);
+  cursor: zoom-in;
+  transition:
+    translate var(--dur) var(--ease-spring),
+    box-shadow var(--dur) var(--ease-out);
+}
+.prog-photo:hover {
+  translate: 0 -3px;
+}
+.prog-photo:focus-visible {
+  outline: 3px solid var(--blue-deep);
+  outline-offset: 4px;
+}
+.prog-photo__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.prog-panel__head--photo .prog-photo {
+  margin-top: 4px;
+  animation: fade-up var(--dur-slow) var(--ease-out);
+}
+@media (max-width: 899px) {
+  .prog-acc__body .prog-photo {
+    height: auto;
+    width: min(100%, calc(210px * var(--ratio)));
+    margin: 4px 0 14px;
+  }
+}
+
 } /* @layer components */

@@ -1,12 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import type { ImageAsset } from "@/lib/media";
 import { Cloud, Heart, Sparkle, Star } from "./Decor";
-import { ChevronLeftIcon, ChevronRightIcon, CloseIcon } from "./Icons";
-import { Modal } from "./Modal";
+import { Lightbox } from "./Lightbox";
 import { SectionHead } from "./SectionHead";
 
 const INITIAL = 6;
@@ -129,24 +128,6 @@ export function Gallery({ photos }: { photos: ImageAsset[] }) {
   const total = photos.length;
   const shown = photos.slice(0, visible);
 
-  const close = useCallback(() => setIndex(null), []);
-  const go = useCallback(
-    (dir: 1 | -1) => setIndex((i) => (i === null ? i : (i + dir + total) % total)),
-    [total],
-  );
-
-  useEffect(() => {
-    if (index === null) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") go(1);
-      if (e.key === "ArrowLeft") go(-1);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [index, go]);
-
-  const current = index !== null ? photos[index] : null;
-
   return (
     <section id="gallery" className="section gallery section-anchor">
       <div className="gallery__deco" aria-hidden="true">
@@ -187,37 +168,12 @@ export function Gallery({ photos }: { photos: ImageAsset[] }) {
         )}
       </div>
 
-      <Modal open={current !== null} onClose={close} label={t.gallery.title} className="lightbox">
-        {current && index !== null && (
-          <div className="lightbox__body">
-            <button type="button" className="modal__close lightbox__close" onClick={close} aria-label={t.gallery.close}>
-              <CloseIcon />
-            </button>
-            <figure className="lightbox__figure">
-              <Image
-                key={current.src}
-                src={current.src}
-                alt={t.gallery.photoAlt(index + 1)}
-                width={current.width}
-                height={current.height}
-                sizes="100vw"
-                className="lightbox__img"
-              />
-              <figcaption aria-live="polite">{t.gallery.counter(index + 1, total)}</figcaption>
-            </figure>
-            {total > 1 && (
-              <>
-                <button type="button" className="lightbox__nav lightbox__nav--prev" onClick={() => go(-1)} aria-label={t.gallery.prev}>
-                  <ChevronLeftIcon size={26} />
-                </button>
-                <button type="button" className="lightbox__nav lightbox__nav--next" onClick={() => go(1)} aria-label={t.gallery.next}>
-                  <ChevronRightIcon size={26} />
-                </button>
-              </>
-            )}
-          </div>
-        )}
-      </Modal>
+      <Lightbox
+        photos={photos.map((img, i) => ({ img, alt: t.gallery.photoAlt(i + 1) }))}
+        index={index}
+        onIndex={setIndex}
+        label={t.gallery.title}
+      />
     </section>
   );
 }

@@ -1,13 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import type { ImageAsset } from "@/lib/media";
+import { GROUP_PHOTO_FOCUS } from "@/lib/photos";
 import type { GroupKey } from "@/lib/site";
 import type { GroupCopy } from "@/locales/types";
 import { Book, Cloud, Flower, Heart, LetterBlock, Pencil, Sparkle, Star, Cube, Squiggle } from "./Decor";
 import { CheckIcon, ChevronDownIcon, CloseIcon, ArrowRightIcon } from "./Icons";
 import { SectionHead } from "./SectionHead";
 import { Modal } from "./Modal";
+import { Lightbox } from "./Lightbox";
 
 const PREVIEW = 3;
 
@@ -41,6 +45,34 @@ function CardArt({ k }: { k: GroupKey }) {
   );
 }
 
+/** Маленькая фигурка в углу карточки с фото (не перекрывает снимок и текст). */
+function PhotoCardDecor({ k }: { k: GroupKey }) {
+  if (k === "kinders") return <Heart className="group-card__corner float" color="#FFB870" />;
+  if (k === "stars") return <Star className="group-card__corner spin-slow" color="#FFD43B" />;
+  return <Pencil className="group-card__corner group-card__corner--pencil" />;
+}
+
+/** Фото интерьера: рамка во всю ширину карточки, кадрирование только интерьера (людей на этих снимках нет). */
+function CardPhoto({ k, photo, age, onOpen }: { k: GroupKey; photo: ImageAsset; age: string; onOpen: () => void }) {
+  const { t } = useI18n();
+  return (
+    <div className="group-card__photo">
+      <button type="button" onClick={onOpen} aria-label={`${t.photos.open}: ${t.photos.interior}`}>
+        <Image
+          src={photo.src}
+          alt={t.photos.interior}
+          width={photo.width}
+          height={photo.height}
+          sizes="(min-width: 1200px) 400px, (min-width: 900px) 32vw, (min-width: 640px) 50vw, 100vw"
+          className="group-card__img"
+          style={{ objectPosition: GROUP_PHOTO_FOCUS[k] ?? "50% 50%" }}
+        />
+      </button>
+      <span className="age-badge group-card__photo-badge">{age}</span>
+    </div>
+  );
+}
+
 function ProgramList({ items, id }: { items: string[]; id?: string }) {
   return (
     <ul className="program-list" id={id}>
@@ -56,7 +88,19 @@ function ProgramList({ items, id }: { items: string[]; id?: string }) {
   );
 }
 
-function GroupCard({ g, index, onOpen }: { g: GroupCopy; index: number; onOpen: (k: GroupKey) => void }) {
+function GroupCard({
+  g,
+  index,
+  onOpen,
+  photo,
+  onPhoto,
+}: {
+  g: GroupCopy;
+  index: number;
+  onOpen: (k: GroupKey) => void;
+  photo?: ImageAsset;
+  onPhoto: (k: GroupKey) => void;
+}) {
   const { t } = useI18n();
   const [expanded, setExpanded] = useState(false);
   const preview = g.programs.slice(0, PREVIEW);
@@ -66,15 +110,24 @@ function GroupCard({ g, index, onOpen }: { g: GroupCopy; index: number; onOpen: 
 
   return (
     <article
-      className={`group-card group-card--${g.key}`}
+      className={`group-card group-card--${g.key} ${photo ? "group-card--photo" : ""}`}
       data-reveal
       style={{ "--d": `${index * 90}ms` } as React.CSSProperties}
       aria-labelledby={`group-${g.key}-title`}
     >
-      <CardArt k={g.key} />
-      <div className="group-card__top">
-        <span className="age-badge">{g.age}</span>
-      </div>
+      {photo ? (
+        <>
+          <CardPhoto k={g.key} photo={photo} age={g.age} onOpen={() => onPhoto(g.key)} />
+          <PhotoCardDecor k={g.key} />
+        </>
+      ) : (
+        <>
+          <CardArt k={g.key} />
+          <div className="group-card__top">
+            <span className="age-badge">{g.age}</span>
+          </div>
+        </>
+      )}
       <h3 className="group-card__title" id={`group-${g.key}-title`}>
         <span className="group-card__name">{name}</span>
         <span className="group-card__tagline">{titleRest.join(" — ")}</span>
@@ -122,9 +175,12 @@ function GroupCard({ g, index, onOpen }: { g: GroupCopy; index: number; onOpen: 
   );
 }
 
-export function Groups() {
+export function Groups({ photos = {} }: { photos?: Partial<Record<GroupKey, ImageAsset>> }) {
   const { t } = useI18n();
   const [openKey, setOpenKey] = useState<GroupKey | null>(null);
+  const [photoIndex, setPhotoIndex] = useState<number | null>(null);
+  const photoKeys = t.groups.items.map((g) => g.key).filter((k) => photos[k]);
+  const lightboxPhotos = photoKeys.map((k) => ({ img: photos[k]!, alt: t.photos.interior }));
   const close = useCallback(() => setOpenKey(null), []);
   const current = t.groups.items.find((g) => g.key === openKey);
 
@@ -139,7 +195,14 @@ export function Groups() {
 
         <div className="groups__grid">
           {t.groups.items.map((g, i) => (
-            <GroupCard key={g.key} g={g} index={i} onOpen={setOpenKey} />
+            <GroupCard
+              key={g.key}
+              g={g}
+              index={i}
+              onOpen={setOpenKey}
+              photo={photos[g.key]}
+              onPhoto={(k) => setPhotoIndex(photoKeys.indexOf(k))}
+            />
           ))}
         </div>
       </div>
@@ -164,6 +227,8 @@ export function Groups() {
           </div>
         )}
       </Modal>
+
+      <Lightbox photos={lightboxPhotos} index={photoIndex} onIndex={setPhotoIndex} label={t.groups.title} />
     </section>
   );
 }

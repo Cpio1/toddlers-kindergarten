@@ -230,6 +230,13 @@ const ru: Dictionary = {
     rights: "Toddlers. Все права защищены.",
     hoursLabel: "Режим работы",
   },
+  photos: {
+    about: "Дети и взрослые на празднике в Toddlers",
+    interior: "Помещение детского сада Toddlers",
+    intellect: "Дети играют в шахматы в Toddlers",
+    sport: "Зал для занятий в Toddlers",
+    open: "Открыть фото",
+  },
 };
 
 export default ru;

@@ -38,7 +38,7 @@ function AboutMedia({ media }: { media: MediaAsset }) {
           playsInline
           preload="metadata"
           poster={media.poster}
-          aria-label={t.hero.photoAlt}
+          aria-label={t.photos.about}
         >
           <source src={media.src} type={media.mime} />
         </video>
@@ -49,7 +49,7 @@ function AboutMedia({ media }: { media: MediaAsset }) {
     <div className="about-media" style={{ "--ratio": media.width / media.height } as React.CSSProperties}>
       <Image
         src={media.src}
-        alt={t.hero.photoAlt}
+        alt={t.photos.about}
         width={media.width}
         height={media.height}
         sizes="(min-width: 900px) 40vw, 100vw"

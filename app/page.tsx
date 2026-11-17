@@ -11,7 +11,7 @@ import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { RevealObserver } from "@/components/RevealObserver";
 import { SkipLink } from "@/components/SkipLink";
 import { AnchorScroll } from "@/components/AnchorScroll";
-import { getAboutMedia, getGalleryPhotos, getHeroImage, getLogo } from "@/lib/media";
+import { getAboutMedia, getGalleryPhotos, getGroupPhotos, getHeroImage, getLogo, getProgramPhotos } from "@/lib/media";
 
 export default function Home() {
   // Файлы ищутся в /public при сборке; если их нет — показываются иллюстрации/заглушки.
@@ -23,8 +23,8 @@ export default function Home() {
       <main id="main">
         <Hero heroImage={getHeroImage()} />
         <About media={getAboutMedia()} />
-        <Groups />
-        <Programs />
+        <Groups photos={getGroupPhotos()} />
+        <Programs photos={getProgramPhotos()} />
         <Nutrition />
         <Gallery photos={getGalleryPhotos()} />
         <Contacts />

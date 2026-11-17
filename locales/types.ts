@@ -120,4 +120,12 @@ export interface Dictionary {
     rights: string;
     hoursLabel: string;
   };
+  /** Подписи (alt) к реальным фотографиям в разделах. */
+  photos: {
+    about: string;
+    interior: string;
+    intellect: string;
+    sport: string;
+    open: string;
+  };
 }

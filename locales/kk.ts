@@ -230,6 +230,13 @@ const kk: Dictionary = {
     rights: "Toddlers. Барлық құқықтар қорғалған.",
     hoursLabel: "Жұмыс уақыты",
   },
+  photos: {
+    about: "Toddlers мерекесіндегі балалар мен ересектер",
+    interior: "Toddlers балабақшасының бөлмесі",
+    intellect: "Toddlers-те балалар шахмат ойнап отыр",
+    sport: "Toddlers-тегі сабақ залы",
+    open: "Фотосуретті ашу",
+  },
 };
 
 export default kk;

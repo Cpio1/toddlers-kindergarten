@@ -1,11 +1,33 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import type { ImageAsset } from "@/lib/media";
 import type { ProgramCategoryKey } from "@/locales/types";
 import { Cloud, Dots, Ring, Sparkle, Star } from "./Decor";
 import { BallIcon, BrainIcon, ChatIcon, ChevronDownIcon, PaletteIcon, SparkIcon } from "./Icons";
 import { SectionHead } from "./SectionHead";
+import { Lightbox } from "./Lightbox";
+
+type ProgramPhotos = Partial<Record<ProgramCategoryKey, ImageAsset>>;
+
+/** Фото направления целиком, в рамке с пропорциями снимка (лица детей не обрезаются). */
+function ProgramPhoto({ k, img, onOpen, sizes }: { k: ProgramCategoryKey; img: ImageAsset; onOpen: () => void; sizes: string }) {
+  const { t } = useI18n();
+  const alt = k === "intellect" ? t.photos.intellect : k === "sport" ? t.photos.sport : t.photos.interior;
+  return (
+    <button
+      type="button"
+      className="prog-photo"
+      style={{ "--ratio": img.width / img.height } as React.CSSProperties}
+      onClick={onOpen}
+      aria-label={`${t.photos.open}: ${alt}`}
+    >
+      <Image src={img.src} alt={alt} width={img.width} height={img.height} sizes={sizes} className="prog-photo__img" />
+    </button>
+  );
+}
 
 const ORDER: ProgramCategoryKey[] = ["intellect", "language", "creative", "sport", "interactive"];
 
@@ -51,7 +73,7 @@ function CategoryDetails({ k }: { k: ProgramCategoryKey }) {
   );
 }
 
-function DesktopPrograms() {
+function DesktopPrograms({ photos, onPhoto }: { photos: ProgramPhotos; onPhoto: (k: ProgramCategoryKey) => void }) {
   const { t } = useI18n();
   const [active, setActive] = useState<ProgramCategoryKey>("intellect");
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -127,10 +149,17 @@ function DesktopPrograms() {
         data-reveal
       >
         <div key={active} className="prog-panel__inner">
-          <span className="prog-panel__icon">
-            <Icon size={28} />
-          </span>
-          <h3>{t.programs.categories[active].title}</h3>
+          <div className={`prog-panel__head ${photos[active] ? "prog-panel__head--photo" : ""}`}>
+            <div className="min-w-0">
+              <span className="prog-panel__icon">
+                <Icon size={28} />
+              </span>
+              <h3>{t.programs.categories[active].title}</h3>
+            </div>
+            {photos[active] && (
+              <ProgramPhoto k={active} img={photos[active]} onOpen={() => onPhoto(active)} sizes="240px" />
+            )}
+          </div>
           <CategoryDetails k={active} />
         </div>
         <Sparkle className="prog-panel__sparkle twinkle" color="#FFD43B" />
@@ -140,7 +169,7 @@ function DesktopPrograms() {
   );
 }
 
-function MobilePrograms() {
+function MobilePrograms({ photos, onPhoto }: { photos: ProgramPhotos; onPhoto: (k: ProgramCategoryKey) => void }) {
   const { t } = useI18n();
   const [open, setOpen] = useState<ProgramCategoryKey | null>("intellect");
 
@@ -168,6 +197,7 @@ function MobilePrograms() {
             </h3>
             <div id={`prog-acc-${k}`} className={`collapse ${isOpen ? "is-open" : ""}`} inert={!isOpen}>
               <div className="collapse__inner prog-acc__body">
+                {photos[k] && <ProgramPhoto k={k} img={photos[k]} onOpen={() => onPhoto(k)} sizes="90vw" />}
                 <CategoryDetails k={k} />
               </div>
             </div>
@@ -178,8 +208,15 @@ function MobilePrograms() {
   );
 }
 
-export function Programs() {
+export function Programs({ photos = {} }: { photos?: ProgramPhotos }) {
   const { t } = useI18n();
+  const [photoIndex, setPhotoIndex] = useState<number | null>(null);
+  const photoKeys = ORDER.filter((k) => photos[k]);
+  const onPhoto = (k: ProgramCategoryKey) => setPhotoIndex(photoKeys.indexOf(k));
+  const lightboxPhotos = photoKeys.map((k) => ({
+    img: photos[k]!,
+    alt: k === "intellect" ? t.photos.intellect : k === "sport" ? t.photos.sport : t.photos.interior,
+  }));
   return (
     <section id="programs" className="section programs section-anchor">
       <div className="programs__deco" aria-hidden="true">
@@ -190,15 +227,16 @@ export function Programs() {
       <div className="wrap">
         <SectionHead eyebrow={t.programs.eyebrow} title={t.programs.title} subtitle={t.programs.subtitle} />
         <div className="only-desktop-block">
-          <DesktopPrograms />
+          <DesktopPrograms photos={photos} onPhoto={onPhoto} />
         </div>
         <div className="only-mobile-block">
-          <MobilePrograms />
+          <MobilePrograms photos={photos} onPhoto={onPhoto} />
         </div>
         <p className="programs__note" data-reveal>
           <span aria-hidden="true">✦</span> {t.programs.note}
         </p>
       </div>
+      <Lightbox photos={lightboxPhotos} index={photoIndex} onIndex={setPhotoIndex} label={t.programs.title} />
     </section>
   );
 }
