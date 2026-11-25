@@ -16,19 +16,24 @@ Build: `next build`) подходят, переменные окружения �
 
 ## Публикация на GitHub Pages
 
-Адрес: https://cpio1.github.io/toddlers-kindergarten/
+Основной адрес: https://toddlers.edu.kz/ (собственный домен; cpio1.github.io/toddlers-kindergarten/ перенаправляет на него).
 
 Сайт собирается и публикуется автоматически (`.github/workflows/deploy.yml`) при каждом `git push` в `main`.
-Один раз: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+Один раз: **Settings → Pages → Build and deployment → Source: GitHub Actions**, Custom domain — `toddlers.edu.kz`.
+
+Базовый путь берётся из `actions/configure-pages` (`base_path`) и передаётся в сборку как `PAGES_BASE_PATH`:
+для собственного домена он пустой (сайт в корне), без домена — `/toddlers-kindergarten`.
+**После смены домена в Settings → Pages перезапустите workflow** (Actions → Deploy to GitHub Pages → Run workflow),
+иначе на сайте останется HTML со старыми путями.
 
 Локальная проверка статического экспорта:
 
 ```bash
-GITHUB_PAGES=true npm run build   # результат — папка out/ (basePath /toddlers-kindergarten)
+GITHUB_PAGES=true PAGES_BASE_PATH="" npm run build   # как для toddlers.edu.kz → out/
+GITHUB_PAGES=true npm run build                      # как для cpio1.github.io/toddlers-kindergarten/
 ```
 
-`GITHUB_PAGES=true` включает `output: "export"`, `basePath`, `trailingSlash` и `images.unoptimized`.
-Без переменной (Vercel, `npm run dev`) сайт работает по корню `/`, как раньше.
+Без `GITHUB_PAGES` (Vercel, `npm run dev`) сайт работает по корню `/`, как раньше.
 URL файлов из `/public` формируются через `assetUrl()` в `lib/asset.ts` — используйте его для новых ресурсов.
 
 ## Где что лежит
