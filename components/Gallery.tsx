@@ -41,7 +41,7 @@ function EmptyGallery() {
 function JustifiedGrid({ photos, onOpen }: { photos: ImageAsset[]; onOpen: (i: number) => void }) {
   const { t } = useI18n();
   return (
-    <ul className="gallery-rows">
+    <ul className={`gallery-rows ${photos.length <= 5 ? "gallery-rows--fill" : ""}`}>
       {photos.map((p, i) => {
         const ratio = p.width / p.height;
         return (

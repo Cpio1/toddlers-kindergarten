@@ -158,7 +158,7 @@ function GroupCard({
           {expanded ? t.groups.less : t.groups.more}
           <ChevronDownIcon size={18} className={`chev ${expanded ? "chev--up" : ""}`} />
         </button>
-        <div className={`collapse ${expanded ? "is-open" : ""}`} inert={!expanded}>
+        <div className={`disclosure-panel ${expanded ? "is-open" : ""}`} inert={!expanded}>
           <div className="collapse__inner">
             <p className="collapse__title">{t.groups.fullProgram}</p>
             <ProgramList items={g.programs} id={listId} />

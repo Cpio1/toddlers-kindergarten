@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { imageSize } from "image-size";
 import { GROUP_PHOTOS, PROGRAM_PHOTOS } from "./photos";
+import { assetUrl } from "./asset";
 import type { GroupKey } from "./site";
 import type { ProgramCategoryKey } from "@/locales/types";
 
@@ -13,6 +14,7 @@ const VIDEO_EXT = [".mp4", ".webm", ".mov"];
 
 export interface ImageAsset {
   type: "image";
+  /** Публичный URL (с basePath на GitHub Pages). Не использовать как путь на диске. */
   src: string;
   width: number;
   height: number;
@@ -60,7 +62,8 @@ function findFile(base: string, exts: string[], dirs = SEARCH_DIRS) {
   return null;
 }
 
-const toSrc = (rel: string) => "/" + rel.split(path.sep).map(encodeURIComponent).join("/");
+/** Путь на диске (относительно /public) → публичный URL с учётом basePath. */
+const toSrc = (rel: string) => assetUrl(rel.split(path.sep).map(encodeURIComponent).join("/"));
 
 /** Фото главного экрана: main-page (png — приоритетный формат по ТЗ, затем jpg/jpeg/webp/avif). */
 export function getHeroImage(): ImageAsset | null {
@@ -124,12 +127,17 @@ export function getGalleryPhotos(): ImageAsset[] {
     .filter((f) => !f.startsWith(".") && IMAGE_EXT.includes(path.extname(f).toLowerCase()))
     .filter((f) => !RESERVED.has(path.parse(f).name.toLowerCase()))
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-    .map((f) => readImage(path.join("gallery", f)))
-    .filter((a): a is ImageAsset => {
-      if (!a) return false;
-      const key = `${a.width}x${a.height}:${fs.statSync(path.join(PUBLIC_DIR, decodeURIComponent(a.src))).size}`;
+    .map((f) => {
+      const rel = path.join("gallery", f); // путь на диске — отдельно от публичного URL
+      const img = readImage(rel);
+      return img ? { img, size: fs.statSync(path.join(PUBLIC_DIR, rel)).size } : null;
+    })
+    .filter((x): x is { img: ImageAsset; size: number } => {
+      if (!x) return false;
+      const key = `${x.img.width}x${x.img.height}:${x.size}`;
       if (seen.has(key)) return false; // одинаковые файлы под разными именами
       seen.add(key);
       return true;
-    });
+    })
+    .map((x) => x.img);
 }

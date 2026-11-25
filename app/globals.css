@@ -576,12 +576,12 @@ button {
   gap: 10px;
 }
 
-.collapse {
+.disclosure-panel {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows var(--dur-slow) var(--ease-out);
 }
-.collapse.is-open {
+.disclosure-panel.is-open {
   grid-template-rows: 1fr;
 }
 .collapse__inner {
@@ -4007,7 +4007,9 @@ a:hover .logo__mark {
 @media (min-width: 900px) {
   .group-card__photo {
     margin-inline: -22px;
-    height: clamp(104px, 17vh, 190px);
+    margin-bottom: 0;
+    /* высота фото зависит от высоты окна: на 1366×768 карточки целиком помещаются в экран */
+    height: clamp(80px, calc(32vh - 166px), 200px);
   }
 }
 
@@ -4057,6 +4059,29 @@ a:hover .logo__mark {
     height: auto;
     width: min(100%, calc(210px * var(--ratio)));
     margin: 4px 0 14px;
+  }
+}
+
+/* Фото в панели программ занимает правый верхний угол — искорка переезжает к точкам внизу */
+.prog-panel:has(.prog-panel__head--photo) .prog-panel__sparkle {
+  top: auto;
+  right: 100px;
+  bottom: 30px;
+}
+/* Галерея: если фото мало (один ряд), они растягиваются на всю ширину с сохранением пропорций */
+.gallery-rows--fill::after {
+  display: none;
+}
+
+@media (min-width: 900px) and (max-height: 800px) {
+  .group-card--photo {
+    gap: 8px;
+  }
+}
+
+@media (min-width: 900px) {
+  .about-media {
+    --media-h: clamp(190px, 30vh, 340px);
   }
 }
 

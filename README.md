@@ -14,6 +14,23 @@ npm run start
 Импортируйте папку/репозиторий в Vercel — настройки по умолчанию (Framework: Next.js,
 Build: `next build`) подходят, переменные окружения не нужны. Node.js ≥ 20.9.
 
+## Публикация на GitHub Pages
+
+Адрес: https://cpio1.github.io/toddlers-kindergarten/
+
+Сайт собирается и публикуется автоматически (`.github/workflows/deploy.yml`) при каждом `git push` в `main`.
+Один раз: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+
+Локальная проверка статического экспорта:
+
+```bash
+GITHUB_PAGES=true npm run build   # результат — папка out/ (basePath /toddlers-kindergarten)
+```
+
+`GITHUB_PAGES=true` включает `output: "export"`, `basePath`, `trailingSlash` и `images.unoptimized`.
+Без переменной (Vercel, `npm run dev`) сайт работает по корню `/`, как раньше.
+URL файлов из `/public` формируются через `assetUrl()` в `lib/asset.ts` — используйте его для новых ресурсов.
+
 ## Где что лежит
 
 | Что | Где |

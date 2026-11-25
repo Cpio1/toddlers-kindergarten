@@ -195,7 +195,7 @@ function MobilePrograms({ photos, onPhoto }: { photos: ProgramPhotos; onPhoto: (
                 <ChevronDownIcon size={20} className={`chev ${isOpen ? "chev--up" : ""}`} />
               </button>
             </h3>
-            <div id={`prog-acc-${k}`} className={`collapse ${isOpen ? "is-open" : ""}`} inert={!isOpen}>
+            <div id={`prog-acc-${k}`} className={`disclosure-panel ${isOpen ? "is-open" : ""}`} inert={!isOpen}>
               <div className="collapse__inner prog-acc__body">
                 {photos[k] && <ProgramPhoto k={k} img={photos[k]} onOpen={() => onPhoto(k)} sizes="90vw" />}
                 <CategoryDetails k={k} />
