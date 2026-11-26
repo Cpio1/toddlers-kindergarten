@@ -11,6 +11,8 @@ export const SITE = {
   instagramUrl: "https://www.instagram.com/toddler_preschool/",
   hours: "08:30–18:30",
   // Поиск адреса в 2GIS — без выдуманных координат и ID организации.
+  // Папка с документами детского сада в Google Диске (внешняя ссылка, не зависит от basePath).
+  documentsUrl: "https://drive.google.com/drive/folders/1Y_fltlaeE4QVBQY6xcSW7D2fI-Hx4RWA?usp=sharing",
   twoGisUrl: `https://2gis.kz/almaty/search/${encodeURIComponent("Сатпаева 90/36")}`,
 } as const;
 
@@ -25,6 +27,7 @@ export const SECTION_IDS = [
   "programs",
   "nutrition",
   "gallery",
+  "documents",
   "contacts",
 ] as const;
 

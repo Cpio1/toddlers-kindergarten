@@ -13,6 +13,7 @@ const ru: Dictionary = {
     programs: "Программы",
     nutrition: "Питание",
     gallery: "Галерея",
+    documents: "Документы",
     contacts: "Контакты",
   },
   header: {
@@ -204,6 +205,16 @@ const ru: Dictionary = {
     next: "Следующая фотография",
     close: "Закрыть просмотр",
     counter: (i, total) => `${i} из ${total}`,
+  },
+  documents: {
+    eyebrow: "Для родителей",
+    title: "Документы",
+    subtitle: "Ознакомьтесь с документами и материалами детского сада Toddlers.",
+    cardTitle: "Документы детского сада Toddlers",
+    cardText: "Все документы и материалы собраны в одной папке — их можно открыть и просмотреть онлайн.",
+    button: "Открыть документы",
+    note: "Google Диск · откроется в новой вкладке",
+    buttonAria: "Открыть документы детского сада Toddlers в Google Диске (в новой вкладке)",
   },
   contacts: {
     eyebrow: "Контакты",

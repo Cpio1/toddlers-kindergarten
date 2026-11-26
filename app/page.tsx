@@ -5,6 +5,7 @@ import { Groups } from "@/components/Groups";
 import { Programs } from "@/components/Programs";
 import { Nutrition } from "@/components/Nutrition";
 import { Gallery } from "@/components/Gallery";
+import { Documents } from "@/components/Documents";
 import { Contacts } from "@/components/Contacts";
 import { Footer } from "@/components/Footer";
 import { WhatsAppFloat } from "@/components/WhatsAppFloat";
@@ -27,6 +28,7 @@ export default function Home() {
         <Programs photos={getProgramPhotos()} />
         <Nutrition />
         <Gallery photos={getGalleryPhotos()} />
+        <Documents />
         <Contacts />
       </main>
       <Footer logo={logo} />

@@ -13,6 +13,7 @@ const kk: Dictionary = {
     programs: "Бағдарламалар",
     nutrition: "Тамақтану",
     gallery: "Галерея",
+    documents: "Құжаттар",
     contacts: "Байланыс",
   },
   header: {
@@ -204,6 +205,16 @@ const kk: Dictionary = {
     next: "Келесі фотосурет",
     close: "Қарауды жабу",
     counter: (i, total) => `${i} / ${total}`,
+  },
+  documents: {
+    eyebrow: "Ата-аналарға",
+    title: "Құжаттар",
+    subtitle: "Toddlers балабақшасының құжаттары мен материалдарымен танысыңыз.",
+    cardTitle: "Toddlers балабақшасының құжаттары",
+    cardText: "Барлық құжаттар мен материалдар бір папкада жинақталған — оларды онлайн ашып, қарауға болады.",
+    button: "Құжаттарды ашу",
+    note: "Google Диск · жаңа қойындыда ашылады",
+    buttonAria: "Toddlers балабақшасының құжаттарын Google Дискте ашу (жаңа қойындыда)",
   },
   contacts: {
     eyebrow: "Байланыс",

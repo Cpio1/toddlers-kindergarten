@@ -4085,4 +4085,197 @@ a:hover .logo__mark {
   }
 }
 
+/* ---------- Документы ---------- */
+.documents {
+  background:
+    radial-gradient(45% 70% at 100% 0%, rgba(255, 212, 59, 0.28), transparent 70%),
+    radial-gradient(40% 60% at 0% 100%, rgba(37, 99, 235, 0.08), transparent 70%),
+    var(--cream);
+  padding-block: calc(var(--section-y) + 12px);
+}
+.documents__cloud {
+  position: absolute;
+  width: 130px;
+}
+.documents__cloud--1 {
+  top: 56px;
+  left: 3%;
+  opacity: 0.9;
+}
+.documents__cloud--2 {
+  bottom: 60px;
+  right: 4%;
+  width: 100px;
+}
+.documents__star {
+  position: absolute;
+  width: 30px;
+  top: 70px;
+  right: 12%;
+}
+.documents__sparkle {
+  position: absolute;
+  width: 20px;
+  bottom: 80px;
+  left: 42%;
+}
+.documents__grid {
+  display: grid;
+  gap: 22px;
+}
+.documents .section-head {
+  margin-bottom: 0;
+}
+
+.docs-card {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+  text-align: center;
+  padding: 22px 18px 20px;
+  background: var(--white);
+  border: 3px solid var(--blue-sky);
+  border-radius: 36px 36px 36px 72px;
+  /* жёлтая «подложка» со смещением — как у кнопок бренда */
+  box-shadow:
+    10px 12px 0 var(--yellow),
+    var(--shadow-md);
+  min-width: 0;
+}
+.docs-folder {
+  position: relative;
+  width: 150px;
+  aspect-ratio: 200 / 160;
+  flex: none;
+}
+.docs-folder__blob {
+  position: absolute;
+  inset: -8% -10%;
+  background: var(--blue-light);
+  border-radius: 58% 42% 55% 45% / 50% 58% 42% 50%;
+}
+.docs-folder__svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.docs-folder__sheet {
+  transition: translate var(--dur-slow) var(--ease-spring);
+}
+.docs-card:hover .docs-folder__sheet--1 {
+  translate: -3px -8px;
+}
+.docs-card:hover .docs-folder__sheet--2 {
+  translate: 3px -12px;
+}
+.docs-folder__spark {
+  position: absolute;
+  width: 22px;
+  top: -6px;
+  right: -10px;
+}
+.docs-card__body {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  min-width: 0;
+  width: 100%;
+}
+.docs-card__title {
+  font-size: var(--fs-h3);
+  font-weight: 900;
+  color: var(--blue-deep);
+  overflow-wrap: anywhere;
+}
+.docs-card__text {
+  color: var(--ink-muted);
+  max-width: 46ch;
+}
+.docs-card__btn {
+  width: 100%;
+  margin-top: 6px;
+}
+.docs-card__note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+.docs-card__note svg {
+  flex: none;
+  color: var(--blue);
+}
+
+@media (min-width: 600px) {
+  .docs-card {
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-items: start;
+    align-items: center;
+    text-align: left;
+    gap: 28px;
+    padding: 28px 32px 28px 28px;
+  }
+  .docs-folder {
+    width: 170px;
+  }
+  .docs-card__body {
+    justify-items: start;
+  }
+  .docs-card__btn {
+    width: auto;
+  }
+}
+
+@media (min-width: 900px) {
+  .documents__grid {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: clamp(28px, 4vw, 64px);
+  }
+  .docs-folder {
+    width: clamp(160px, 15vw, 200px);
+  }
+}
+
+@media (max-width: 599px) {
+  .documents {
+    padding-block: calc(var(--section-y) + 4px);
+  }
+  .documents__cloud--1 {
+    top: 30px;
+    width: 90px;
+    left: auto;
+    right: -10px;
+  }
+  .documents__cloud--2,
+  .documents__sparkle {
+    display: none;
+  }
+  .documents__star {
+    top: 44px;
+    right: 22%;
+    width: 22px;
+  }
+  .docs-card {
+    box-shadow:
+      6px 8px 0 var(--yellow),
+      var(--shadow-md);
+  }
+}
+
+/* Header: семь пунктов меню на ноутбуках — компактнее, чтобы ничего не переносилось */
+@media (min-width: 1180px) and (max-width: 1359px) {
+  .site-nav ul {
+    gap: 0;
+  }
+  .site-nav a {
+    padding: 8px 8px;
+    font-size: 0.88rem;
+  }
+}
+
 } /* @layer components */

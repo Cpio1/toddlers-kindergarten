@@ -9,10 +9,14 @@ function headerHeight() {
   return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 0;
 }
 
-/** Куда прокручивать: к заголовку раздела (.section-head), а не к верхней границе секции. */
+/** Куда прокручивать: к заголовку раздела ([data-anchor] или .section-head), а не к верхней границе секции. */
 function targetTop(section: HTMLElement) {
   if (section.id === "home") return 0;
-  const anchor = section.querySelector<HTMLElement>(".section-head") ?? section;
+  // [data-anchor] — если заголовок стоит рядом с более высоким блоком (раздел «Документы»).
+  const anchor =
+    section.querySelector<HTMLElement>("[data-anchor]") ??
+    section.querySelector<HTMLElement>(".section-head") ??
+    section;
   // translate от анимации появления не влияет на layout, но влияет на getBoundingClientRect —
   // поэтому вычитаем его, чтобы позиция не «плыла».
   const shift = parseFloat(getComputedStyle(anchor).translate.split(" ")[1] ?? "0") || 0;

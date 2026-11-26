@@ -96,6 +96,17 @@ export interface Dictionary {
     close: string;
     counter: (i: number, total: number) => string;
   };
+  documents: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    cardTitle: string;
+    cardText: string;
+    button: string;
+    note: string;
+    /** aria-label кнопки: сообщает, что ссылка откроется в новой вкладке. */
+    buttonAria: string;
+  };
   contacts: {
     eyebrow: string;
     title: string;
